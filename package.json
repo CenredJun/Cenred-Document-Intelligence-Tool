@@ -1,0 +1,15 @@
+{
+  "name": "doc-intelligence",
+  "version": "1.0.0",
+  "description": "AI-powered PDF document intelligence tool — Claude API + PDF.js + Netlify",
+  "private": true,
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "dev": "netlify dev",
+    "deploy": "netlify deploy --prod"
+  },
+  "author": "Cenred (Cj)",
+  "license": "MIT"
+}
