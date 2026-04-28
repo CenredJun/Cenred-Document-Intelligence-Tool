@@ -3,596 +3,842 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Document Intelligence Tool — Cenred AI</title>
-  <meta name="description" content="Upload any PDF — contract, invoice, policy, report — and instantly receive an AI-powered summary, structured field extraction, and a chat interface to ask questions about it." />
+  <title>Document Intelligence — Cenred AI</title>
+  <meta name="description" content="AI-powered document analysis. Upload any contract, invoice, policy or report and receive an instant structured briefing, key field extraction, and a Q&A interface." />
 
-  <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
 
   <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
     :root {
-      --bg: #0b1020;
-      --bg-soft: #131a32;
-      --card: #161e3a;
-      --card-hover: #1c2647;
-      --border: #25305a;
-      --text: #e7ecff;
-      --text-dim: #9aa6cf;
-      --accent: #5b8cff;
-      --accent-hover: #7aa2ff;
-      --success: #34d399;
-      --danger: #f87171;
-      --warning: #fbbf24;
-      --radius: 14px;
-      --shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      --navy:    #0f1623;
+      --navy-2:  #1a2235;
+      --navy-3:  #243049;
+      --gold:    #c9a96e;
+      --gold-lt: #e8d5aa;
+      --gold-dk: #9a7840;
+      --cream:   #f7f4ee;
+      --cream-2: #edeae2;
+      --parchment: #faf8f3;
+      --ink:     #1c1f26;
+      --ink-2:   #3d4252;
+      --ink-3:   #6b7080;
+      --rule:    rgba(201,169,110,0.25);
+      --rule-dk: rgba(201,169,110,0.12);
+      --success: #2d6a4f;
+      --success-bg: #d8f3dc;
+      --danger:  #9b2335;
+      --danger-bg: #fde8ea;
+      --warn:    #7d5a00;
+      --warn-bg: #fff3cd;
+      --r:       4px;
+      --r-lg:    8px;
     }
 
-    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
 
-    html, body {
-      margin: 0;
-      padding: 0;
-      background: var(--bg);
-      color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, sans-serif;
-      line-height: 1.55;
+    body {
+      background: var(--parchment);
+      color: var(--ink);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      line-height: 1.6;
       min-height: 100vh;
     }
 
-    body {
-      background: radial-gradient(circle at 20% 0%, rgba(91, 140, 255, 0.12), transparent 50%),
-                  radial-gradient(circle at 80% 100%, rgba(52, 211, 153, 0.08), transparent 50%),
-                  var(--bg);
-    }
-
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 32px 20px 80px;
-    }
-
-    header.app-header {
+    /* ── Topbar ── */
+    .topbar {
+      background: var(--navy);
+      border-bottom: 1px solid var(--gold-dk);
+      padding: 0 40px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 32px;
-      flex-wrap: wrap;
-      gap: 16px;
+      height: 56px;
     }
 
-    .brand { display: flex; align-items: center; gap: 12px; }
-
-    .brand-logo {
-      width: 40px;
-      height: 40px;
-      border-radius: 10px;
-      background: linear-gradient(135deg, var(--accent), #34d399);
-      display: grid;
-      place-items: center;
-      font-weight: 700;
-      font-size: 18px;
-      color: white;
-    }
-
-    .brand-name { font-size: 18px; font-weight: 600; letter-spacing: -0.01em; }
-    .brand-sub { font-size: 12px; color: var(--text-dim); }
-
-    .hero { text-align: center; margin-bottom: 40px; }
-
-    .hero h1 {
-      font-size: clamp(28px, 4.5vw, 44px);
-      margin: 0 0 12px;
-      letter-spacing: -0.02em;
-      background: linear-gradient(135deg, #fff, #9aa6cf);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-    }
-
-    .hero p {
-      font-size: 16px;
-      color: var(--text-dim);
-      max-width: 640px;
-      margin: 0 auto;
-    }
-
-    .card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 28px;
-      margin-bottom: 24px;
-      box-shadow: var(--shadow);
-    }
-
-    .card h2 {
-      margin: 0 0 16px;
-      font-size: 18px;
-      letter-spacing: -0.01em;
+    .topbar-brand {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 14px;
     }
 
-    .card h2::before {
-      content: "";
-      width: 4px;
-      height: 20px;
-      background: var(--accent);
-      border-radius: 2px;
+    .topbar-seal {
+      width: 32px;
+      height: 32px;
+      border: 1.5px solid var(--gold);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    /* Upload zone */
+    .topbar-seal svg { display: block; }
+
+    .topbar-name {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      color: var(--gold-lt);
+      text-transform: uppercase;
+    }
+
+    .topbar-divider {
+      width: 1px;
+      height: 18px;
+      background: var(--gold-dk);
+    }
+
+    .topbar-product {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 17px;
+      font-weight: 400;
+      color: var(--gold);
+      letter-spacing: 0.02em;
+    }
+
+    .topbar-nav {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .topbar-link {
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+      text-decoration: none;
+      color: rgba(201,169,110,0.6);
+      transition: color 0.15s;
+    }
+
+    .topbar-link:hover { color: var(--gold); }
+
+    /* ── Page wrapper ── */
+    .page {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 48px 24px 96px;
+    }
+
+    /* ── Hero ── */
+    .hero {
+      text-align: center;
+      padding: 48px 0 40px;
+      border-bottom: 1px solid var(--rule);
+      margin-bottom: 40px;
+    }
+
+    .hero-eyebrow {
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-weight: 500;
+      margin-bottom: 14px;
+    }
+
+    .hero-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(38px, 5vw, 58px);
+      font-weight: 600;
+      color: var(--navy);
+      line-height: 1.1;
+      letter-spacing: -0.01em;
+      margin-bottom: 16px;
+    }
+
+    .hero-title em {
+      font-style: italic;
+      color: var(--gold-dk);
+    }
+
+    .hero-sub {
+      font-size: 15px;
+      color: var(--ink-3);
+      max-width: 520px;
+      margin: 0 auto;
+      font-weight: 300;
+      line-height: 1.7;
+    }
+
+    /* ── Section wrapper ── */
+    .section {
+      background: var(--parchment);
+      border: 1px solid var(--cream-2);
+      border-radius: var(--r-lg);
+      margin-bottom: 24px;
+      overflow: hidden;
+    }
+
+    .section-head {
+      background: var(--navy);
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--gold);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-num {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: var(--gold-dk);
+      letter-spacing: 0.05em;
+    }
+
+    .section-body { padding: 28px 28px; }
+
+    /* ── Upload zone ── */
     .dropzone {
-      border: 2px dashed var(--border);
-      border-radius: var(--radius);
-      padding: 48px 24px;
+      border: 1.5px dashed var(--gold-dk);
+      border-radius: var(--r);
+      padding: 40px 24px;
       text-align: center;
       cursor: pointer;
-      transition: all 0.2s ease;
-      background: rgba(91, 140, 255, 0.03);
+      transition: all 0.2s;
+      background: var(--cream);
     }
 
     .dropzone:hover, .dropzone.dragover {
-      border-color: var(--accent);
-      background: rgba(91, 140, 255, 0.08);
+      border-color: var(--gold);
+      background: #f0ead8;
     }
 
-    .dropzone.dragover { transform: scale(1.01); }
-
-    .dropzone-icon { font-size: 40px; margin-bottom: 12px; opacity: 0.7; }
-    .dropzone-title { font-size: 18px; font-weight: 600; margin-bottom: 6px; }
-    .dropzone-sub { color: var(--text-dim); font-size: 14px; margin-bottom: 18px; }
     .dropzone input[type=file] { display: none; }
 
-    .btn {
-      background: var(--accent);
-      color: white;
-      border: none;
-      border-radius: 10px;
-      padding: 11px 20px;
-      font-size: 14px;
+    .drop-icon {
+      width: 52px;
+      height: 64px;
+      margin: 0 auto 16px;
+      position: relative;
+    }
+
+    .drop-icon-page {
+      width: 52px;
+      height: 64px;
+      background: var(--parchment);
+      border: 1.5px solid var(--gold-dk);
+      border-radius: 2px;
+      border-top-right-radius: 14px;
+    }
+
+    .drop-icon-fold {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 14px;
+      height: 14px;
+      background: var(--cream-2);
+      border-left: 1.5px solid var(--gold-dk);
+      border-bottom: 1.5px solid var(--gold-dk);
+      border-top-right-radius: 2px;
+    }
+
+    .drop-icon-lines {
+      position: absolute;
+      left: 10px;
+      top: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .drop-icon-line {
+      height: 1.5px;
+      background: var(--gold-dk);
+      border-radius: 1px;
+    }
+
+    .drop-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 20px;
       font-weight: 600;
-      cursor: pointer;
-      transition: background 0.15s ease, transform 0.1s ease;
-      font-family: inherit;
+      color: var(--navy);
+      margin-bottom: 6px;
     }
 
-    .btn:hover:not(:disabled) { background: var(--accent-hover); }
-    .btn:active:not(:disabled) { transform: translateY(1px); }
-    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
-
-    .btn-ghost {
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--text);
-    }
-
-    .btn-ghost:hover:not(:disabled) {
-      background: var(--card-hover);
-      border-color: var(--accent);
-    }
-
-    .btn-row {
-      display: flex;
-      gap: 10px;
-      justify-content: center;
-      flex-wrap: wrap;
-      margin-top: 8px;
-    }
-
-    .sample-row {
-      display: flex;
-      gap: 10px;
-      justify-content: center;
-      flex-wrap: wrap;
-      margin-top: 18px;
-      padding-top: 18px;
-      border-top: 1px dashed var(--border);
-    }
-
-    .sample-row-label {
-      width: 100%;
-      text-align: center;
-      color: var(--text-dim);
+    .drop-sub {
       font-size: 13px;
+      color: var(--ink-3);
+      font-weight: 300;
+      margin-bottom: 20px;
+    }
+
+    .btn-primary {
+      display: inline-block;
+      background: var(--navy);
+      color: var(--gold);
+      border: 1px solid var(--gold-dk);
+      border-radius: var(--r);
+      padding: 10px 24px;
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      font-weight: 500;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      transition: all 0.15s;
+    }
+
+    .btn-primary:hover { background: var(--navy-2); border-color: var(--gold); color: var(--gold-lt); }
+    .btn-primary:disabled { opacity: 0.45; cursor: not-allowed; }
+
+    .sample-divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 20px 0 16px;
+    }
+
+    .sample-divider-line { flex: 1; height: 1px; background: var(--rule); }
+
+    .sample-divider-text {
+      font-size: 10px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--gold-dk);
+      font-weight: 500;
+    }
+
+    .sample-btns {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn-sample {
+      display: inline-block;
+      background: transparent;
+      color: var(--ink-2);
+      border: 1px solid var(--cream-2);
+      border-radius: var(--r);
+      padding: 8px 16px;
+      font-size: 12px;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 400;
+      transition: all 0.15s;
+    }
+
+    .btn-sample:hover { border-color: var(--gold-dk); color: var(--navy); background: var(--cream); }
+
+    /* ── Status ── */
+    .status {
+      padding: 12px 16px;
+      border-radius: var(--r);
+      margin-top: 14px;
+      font-size: 13px;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-weight: 400;
+    }
+
+    .status.error { background: var(--danger-bg); color: var(--danger); border: 1px solid rgba(155,35,53,0.2); }
+    .status.success { background: var(--success-bg); color: var(--success); border: 1px solid rgba(45,106,79,0.2); }
+    .status.info { background: #eef3fb; color: #1a4480; border: 1px solid rgba(26,68,128,0.15); }
+
+    /* ── Stats bar ── */
+    .stats-bar {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 1px;
+      background: var(--cream-2);
+      border: 1px solid var(--cream-2);
+      border-radius: var(--r);
+      overflow: hidden;
+    }
+
+    .stat-cell {
+      background: var(--parchment);
+      padding: 14px 16px;
+    }
+
+    .stat-label {
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+      font-weight: 500;
       margin-bottom: 4px;
     }
 
-    /* Status / errors */
-    .status {
-      padding: 12px 16px;
-      border-radius: 10px;
-      margin: 12px 0;
-      font-size: 14px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
+    .stat-value {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--navy);
+      line-height: 1.2;
     }
 
-    .status.error {
-      background: rgba(248, 113, 113, 0.1);
-      border: 1px solid rgba(248, 113, 113, 0.3);
-      color: var(--danger);
-    }
-
-    .status.success {
-      background: rgba(52, 211, 153, 0.08);
-      border: 1px solid rgba(52, 211, 153, 0.25);
-      color: var(--success);
-    }
-
-    .status.info {
-      background: rgba(91, 140, 255, 0.08);
-      border: 1px solid rgba(91, 140, 255, 0.25);
-      color: var(--accent);
-    }
-
-    /* Stats grid */
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-      gap: 12px;
-    }
-
-    .stat {
-      background: var(--bg-soft);
-      border: 1px solid var(--border);
-      padding: 14px 16px;
-      border-radius: 10px;
-    }
-
-    .stat-label { font-size: 11px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.05em; }
-    .stat-value { font-size: 22px; font-weight: 600; margin-top: 4px; }
-
-    /* Doc-type / confidence header */
+    /* ── Meta row ── */
     .meta-row {
       display: flex;
       align-items: center;
       flex-wrap: wrap;
       gap: 10px;
-      margin-bottom: 14px;
+      margin-bottom: 18px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--rule);
     }
 
     .doc-type-badge {
-      display: inline-block;
-      background: rgba(91, 140, 255, 0.12);
-      color: var(--accent);
-      border: 1px solid rgba(91, 140, 255, 0.3);
-      padding: 6px 14px;
-      border-radius: 20px;
-      font-size: 13px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 15px;
       font-weight: 600;
+      color: var(--navy);
+      background: var(--cream);
+      border: 1px solid var(--cream-2);
+      padding: 4px 14px;
+      border-radius: 2px;
+      letter-spacing: 0.03em;
     }
 
     .confidence-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 12px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 600;
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-weight: 500;
+      padding: 4px 12px;
+      border-radius: 2px;
     }
 
-    .confidence-badge.high { background: rgba(52, 211, 153, 0.12); color: var(--success); border: 1px solid rgba(52, 211, 153, 0.3); }
-    .confidence-badge.medium { background: rgba(251, 191, 36, 0.12); color: var(--warning); border: 1px solid rgba(251, 191, 36, 0.3); }
-    .confidence-badge.low { background: rgba(248, 113, 113, 0.12); color: var(--danger); border: 1px solid rgba(248, 113, 113, 0.3); }
+    .confidence-badge.high { background: var(--success-bg); color: var(--success); }
+    .confidence-badge.medium { background: var(--warn-bg); color: var(--warn); }
+    .confidence-badge.low { background: var(--danger-bg); color: var(--danger); }
 
-    .truncated-pill {
-      background: rgba(251, 191, 36, 0.1);
-      color: var(--warning);
-      border: 1px solid rgba(251, 191, 36, 0.25);
+    .truncated-badge {
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--warn);
+      background: var(--warn-bg);
       padding: 4px 10px;
-      border-radius: 14px;
-      font-size: 11px;
+      border-radius: 2px;
     }
 
+    /* ── Summary ── */
     .summary-text {
-      font-size: 16px;
-      line-height: 1.65;
-      color: var(--text);
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 18px;
+      line-height: 1.75;
+      color: var(--ink);
+      font-weight: 400;
     }
 
-    /* Extraction grid */
+    /* ── Extraction grid ── */
     .extract-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
       gap: 16px;
     }
 
     .extract-card {
-      background: var(--bg-soft);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 18px 20px;
+      border: 1px solid var(--cream-2);
+      border-radius: var(--r);
+      overflow: hidden;
     }
 
-    .extract-card h3 {
-      margin: 0 0 12px;
-      font-size: 13px;
-      color: var(--text-dim);
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
+    .extract-card-head {
+      background: var(--cream);
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--cream-2);
       display: flex;
       align-items: center;
-      gap: 6px;
+      justify-content: space-between;
     }
 
-    .extract-card h3 .count {
-      background: var(--card);
-      border-radius: 10px;
-      padding: 1px 8px;
-      font-size: 11px;
-      color: var(--text-dim);
+    .extract-card-title {
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold-dk);
+      font-weight: 500;
     }
 
-    .extract-card ul {
-      margin: 0;
-      padding: 0;
-      list-style: none;
+    .extract-card-count {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: var(--ink-3);
     }
 
-    .extract-card li {
-      padding: 8px 0;
-      border-bottom: 1px solid var(--border);
-      font-size: 14px;
+    .extract-card-body { padding: 4px 0; }
+
+    .extract-item {
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--cream-2);
+      font-size: 13px;
       line-height: 1.5;
+      color: var(--ink-2);
     }
 
-    .extract-card li:last-child { border-bottom: none; }
+    .extract-item:last-child { border-bottom: none; }
 
-    .extract-card .kv {
+    .extract-kv {
       display: flex;
       justify-content: space-between;
+      align-items: flex-start;
       gap: 12px;
     }
 
-    .extract-card .kv .key {
-      color: var(--text-dim);
-      font-size: 13px;
+    .extract-key {
+      font-size: 11px;
+      color: var(--ink-3);
+      font-weight: 400;
       flex-shrink: 0;
+      padding-top: 1px;
     }
 
-    .extract-card .kv .val {
-      color: var(--text);
+    .extract-val {
       font-weight: 500;
+      color: var(--navy);
       text-align: right;
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
     }
 
-    .extract-card .clause-name {
-      color: var(--accent);
+    .extract-clause-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 15px;
       font-weight: 600;
-      font-size: 13px;
+      color: var(--navy);
       margin-bottom: 2px;
     }
 
-    .extract-card .clause-summary {
-      color: var(--text-dim);
-      font-size: 13px;
+    .extract-clause-summary {
+      font-size: 12px;
+      color: var(--ink-3);
     }
 
-    .extract-card .empty {
-      color: var(--text-dim);
-      font-size: 13px;
+    .extract-empty {
+      padding: 14px 16px;
+      font-size: 12px;
+      color: var(--ink-3);
       font-style: italic;
-      padding: 6px 0;
     }
 
-    /* Chat */
+    /* ── Chat ── */
     .chat-window {
-      background: var(--bg-soft);
-      border: 1px solid var(--border);
-      border-radius: 12px;
+      background: var(--cream);
+      border: 1px solid var(--cream-2);
+      border-radius: var(--r);
       padding: 16px;
-      max-height: 480px;
+      min-height: 140px;
+      max-height: 440px;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 14px;
       margin-bottom: 14px;
-      min-height: 140px;
     }
 
     .chat-empty {
       text-align: center;
-      color: var(--text-dim);
+      color: var(--ink-3);
       font-size: 13px;
-      margin: auto 0;
+      margin: auto;
+      font-style: italic;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 16px;
     }
 
     .msg { display: flex; gap: 10px; max-width: 85%; }
     .msg.user { align-self: flex-end; flex-direction: row-reverse; }
 
     .msg-avatar {
-      width: 32px;
-      height: 32px;
+      width: 30px;
+      height: 30px;
       border-radius: 50%;
       flex-shrink: 0;
-      display: grid;
-      place-items: center;
-      font-size: 13px;
-      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
     }
 
-    .msg.user .msg-avatar { background: var(--accent); color: white; }
-    .msg.assistant .msg-avatar { background: linear-gradient(135deg, #5b8cff, #34d399); color: white; }
+    .msg.user .msg-avatar { background: var(--navy); color: var(--gold); border: 1px solid var(--gold-dk); font-size: 9px; }
+    .msg.assistant .msg-avatar { background: var(--cream-2); color: var(--gold-dk); border: 1px solid var(--cream-2); font-size: 9px; }
 
     .msg-bubble {
-      background: var(--card);
+      background: var(--parchment);
+      border: 1px solid var(--cream-2);
       padding: 10px 14px;
-      border-radius: 12px;
+      border-radius: var(--r);
       font-size: 14px;
-      line-height: 1.55;
+      line-height: 1.6;
       white-space: pre-wrap;
       word-wrap: break-word;
+      color: var(--ink);
     }
 
-    .msg.user .msg-bubble { background: var(--accent); color: white; }
+    .msg.user .msg-bubble {
+      background: var(--navy);
+      color: var(--gold-lt);
+      border-color: var(--navy-3);
+    }
 
     .chat-input-row { display: flex; gap: 10px; }
 
     .chat-input {
       flex: 1;
-      background: var(--bg-soft);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      color: var(--text);
-      padding: 12px 14px;
+      background: var(--parchment);
+      border: 1px solid var(--cream-2);
+      border-radius: var(--r);
+      color: var(--ink);
+      padding: 11px 14px;
       font-size: 14px;
-      font-family: inherit;
+      font-family: 'DM Sans', sans-serif;
       outline: none;
-      transition: border-color 0.15s ease;
+      transition: border-color 0.15s;
     }
 
-    .chat-input:focus { border-color: var(--accent); }
-    .chat-input:disabled { opacity: 0.5; cursor: not-allowed; }
+    .chat-input:focus { border-color: var(--gold-dk); }
+    .chat-input:disabled { opacity: 0.45; cursor: not-allowed; }
+    .chat-input::placeholder { color: var(--ink-3); }
+
+    .suggestions {
+      margin-bottom: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .suggestions-label {
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gold-dk);
+      font-weight: 500;
+      margin-right: 4px;
+    }
 
     .chip {
-      display: inline-block;
-      background: rgba(91, 140, 255, 0.1);
-      color: var(--accent);
-      border: 1px solid rgba(91, 140, 255, 0.25);
-      padding: 4px 10px;
-      border-radius: 20px;
       font-size: 12px;
+      padding: 5px 12px;
+      border: 1px solid var(--cream-2);
+      border-radius: 2px;
+      color: var(--ink-2);
       cursor: pointer;
-      transition: background 0.15s ease;
-      margin: 2px 4px 2px 0;
+      background: var(--parchment);
+      transition: all 0.15s;
+      font-family: 'DM Sans', sans-serif;
     }
 
-    .chip:hover { background: rgba(91, 140, 255, 0.2); }
+    .chip:hover { border-color: var(--gold-dk); color: var(--navy); background: var(--cream); }
 
-    .suggestions { margin-bottom: 10px; font-size: 13px; color: var(--text-dim); }
-
-    .typing { display: inline-flex; gap: 4px; padding: 4px 0; }
-
-    .typing span {
-      width: 7px;
-      height: 7px;
-      background: var(--text-dim);
-      border-radius: 50%;
-      animation: bounce 1.2s infinite ease-in-out;
-    }
-
+    /* ── Typing indicator ── */
+    .typing { display: inline-flex; gap: 5px; align-items: center; padding: 2px 0; }
+    .typing span { width: 6px; height: 6px; background: var(--gold-dk); border-radius: 50%; animation: bounce 1.2s infinite ease-in-out; }
     .typing span:nth-child(2) { animation-delay: 0.15s; }
     .typing span:nth-child(3) { animation-delay: 0.3s; }
 
     @keyframes bounce {
-      0%, 80%, 100% { transform: translateY(0); opacity: 0.5; }
-      40% { transform: translateY(-6px); opacity: 1; }
+      0%, 80%, 100% { transform: translateY(0); opacity: 0.4; }
+      40% { transform: translateY(-5px); opacity: 1; }
     }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      padding: 32px 0 0;
+      border-top: 1px solid var(--rule);
+      margin-top: 16px;
+    }
+
+    .footer-rule {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 12px;
+    }
+
+    .footer-seal {
+      width: 6px;
+      height: 6px;
+      background: var(--gold);
+      border-radius: 50%;
+    }
+
+    .footer-line { width: 60px; height: 1px; background: var(--rule); }
+
+    footer p { font-size: 12px; color: var(--ink-3); font-weight: 300; }
+    footer a { color: var(--gold-dk); text-decoration: none; }
+    footer a:hover { color: var(--navy); }
 
     .hidden { display: none !important; }
 
-    footer {
-      text-align: center;
-      color: var(--text-dim);
-      font-size: 13px;
-      margin-top: 40px;
-    }
-
-    footer a { color: var(--accent); text-decoration: none; }
-    footer a:hover { text-decoration: underline; }
-
     @media (max-width: 600px) {
-      .container { padding: 16px 12px 40px; }
-      .card { padding: 20px 16px; }
+      .page { padding: 24px 16px 60px; }
+      .topbar { padding: 0 16px; }
+      .topbar-product { display: none; }
+      .section-body { padding: 20px 16px; }
       .extract-grid { grid-template-columns: 1fr; }
       .msg { max-width: 95%; }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <header class="app-header">
-      <div class="brand">
-        <div class="brand-logo">CJ</div>
-        <div>
-          <div class="brand-name">Cenred AI</div>
-          <div class="brand-sub">Document Intelligence Tool</div>
+
+  <header class="topbar">
+    <div class="topbar-brand">
+      <div class="topbar-seal">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <rect x="2" y="1" width="8" height="11" rx="1" stroke="#c9a96e" stroke-width="1.2"/>
+          <line x1="4" y1="5" x2="8" y2="5" stroke="#c9a96e" stroke-width="1"/>
+          <line x1="4" y1="7.5" x2="8" y2="7.5" stroke="#c9a96e" stroke-width="1"/>
+          <line x1="4" y1="10" x2="6.5" y2="10" stroke="#c9a96e" stroke-width="1"/>
+        </svg>
+      </div>
+      <span class="topbar-name">Cenred AI</span>
+      <div class="topbar-divider"></div>
+      <span class="topbar-product">Document Intelligence</span>
+    </div>
+    <nav class="topbar-nav">
+      <a href="https://cenredai.bizguro.net" target="_blank" rel="noopener" class="topbar-link">Portfolio</a>
+      <a href="https://github.com/CenredJun/Cenred-Document-Intelligence-Tool" target="_blank" rel="noopener" class="topbar-link">Source</a>
+    </nav>
+  </header>
+
+  <main class="page">
+
+    <div class="hero">
+      <div class="hero-eyebrow">AI-Powered Document Analysis</div>
+      <h1 class="hero-title">Read any document.<br><em>Understand it instantly.</em></h1>
+      <p class="hero-sub">Upload a contract, invoice, policy or report. Claude extracts the key parties, dates, amounts and obligations — and answers your questions about it.</p>
+    </div>
+
+    <!-- Upload -->
+    <div class="section" id="uploadSection">
+      <div class="section-head">
+        <div class="section-title">
+          <span class="section-num">I.</span>
+          Upload Document
         </div>
       </div>
-      <a class="btn btn-ghost" href="https://cenredai.bizguro.net" target="_blank" rel="noopener">Portfolio</a>
-    </header>
+      <div class="section-body">
+        <label for="fileInput" class="dropzone" id="dropzone">
+          <div class="drop-icon">
+            <div class="drop-icon-page"></div>
+            <div class="drop-icon-fold"></div>
+            <div class="drop-icon-lines">
+              <div class="drop-icon-line" style="width:32px"></div>
+              <div class="drop-icon-line" style="width:24px"></div>
+              <div class="drop-icon-line" style="width:28px"></div>
+            </div>
+          </div>
+          <div class="drop-title">Drop a PDF here</div>
+          <div class="drop-sub">Contracts · Invoices · Policies · Reports — up to 10 MB</div>
+          <button type="button" class="btn-primary" id="browseBtn">Select File</button>
+          <input type="file" id="fileInput" accept=".pdf,application/pdf" />
+        </label>
 
-    <section class="hero">
-      <h1>Read any PDF in seconds</h1>
-      <p>Upload a contract, invoice, policy or report and an AI analyst returns a plain-English summary, the key fields extracted, and a chat interface so you can dig deeper.</p>
-    </section>
-
-    <!-- Upload zone -->
-    <section class="card" id="uploadCard">
-      <h2>1. Upload a PDF</h2>
-      <label for="fileInput" class="dropzone" id="dropzone">
-        <div class="dropzone-icon">&#128196;</div>
-        <div class="dropzone-title">Drop a PDF here</div>
-        <div class="dropzone-sub">or click to browse — up to 10MB, .pdf format</div>
-        <div class="btn-row">
-          <button type="button" class="btn" id="browseBtn">Choose file</button>
+        <div class="sample-divider">
+          <div class="sample-divider-line"></div>
+          <div class="sample-divider-text">Or try a sample</div>
+          <div class="sample-divider-line"></div>
         </div>
-        <input type="file" id="fileInput" accept=".pdf,application/pdf" />
 
-        <div class="sample-row">
-          <div class="sample-row-label">Or try a sample</div>
-          <button type="button" class="btn btn-ghost" data-sample="data/sample-contract.pdf" data-name="sample-contract.pdf">Service Agreement</button>
-          <button type="button" class="btn btn-ghost" data-sample="data/sample-invoice.pdf" data-name="sample-invoice.pdf">Tax Invoice</button>
-          <button type="button" class="btn btn-ghost" data-sample="data/sample-policy.pdf" data-name="sample-policy.pdf">Remote Work Policy</button>
+        <div class="sample-btns">
+          <button type="button" class="btn-sample" data-sample="data/sample-contract.pdf" data-name="sample-contract.pdf">Service Agreement</button>
+          <button type="button" class="btn-sample" data-sample="data/sample-invoice.pdf" data-name="sample-invoice.pdf">Tax Invoice</button>
+          <button type="button" class="btn-sample" data-sample="data/sample-policy.pdf" data-name="sample-policy.pdf">Remote Work Policy</button>
         </div>
-      </label>
-      <div id="uploadStatus"></div>
-    </section>
 
-    <!-- Document stats -->
-    <section class="card hidden" id="statsCard">
-      <h2>2. Document overview</h2>
-      <div class="stats" id="statsGrid"></div>
-    </section>
+        <div id="uploadStatus"></div>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="section hidden" id="statsSection">
+      <div class="section-head">
+        <div class="section-title"><span class="section-num">II.</span> Document Overview</div>
+      </div>
+      <div class="section-body">
+        <div class="stats-bar" id="statsGrid"></div>
+      </div>
+    </div>
 
     <!-- Summary -->
-    <section class="card hidden" id="summaryCard">
-      <h2>3. Executive summary</h2>
-      <div class="meta-row" id="metaRow"></div>
-      <div class="summary-text" id="summaryText"></div>
-    </section>
+    <div class="section hidden" id="summarySection">
+      <div class="section-head">
+        <div class="section-title"><span class="section-num">III.</span> Executive Summary</div>
+      </div>
+      <div class="section-body">
+        <div class="meta-row" id="metaRow"></div>
+        <div class="summary-text" id="summaryText"></div>
+      </div>
+    </div>
 
     <!-- Extraction -->
-    <section class="card hidden" id="extractCard">
-      <h2>4. Extracted information</h2>
-      <div class="extract-grid" id="extractGrid"></div>
-    </section>
+    <div class="section hidden" id="extractSection">
+      <div class="section-head">
+        <div class="section-title"><span class="section-num">IV.</span> Extracted Information</div>
+      </div>
+      <div class="section-body">
+        <div class="extract-grid" id="extractGrid"></div>
+      </div>
+    </div>
 
     <!-- Chat -->
-    <section class="card hidden" id="chatCard">
-      <h2>5. Ask questions about this document</h2>
-      <div class="suggestions" id="suggestions"></div>
-      <div class="chat-window" id="chatWindow">
-        <div class="chat-empty" id="chatEmpty">Ask a question to start the conversation.</div>
+    <div class="section hidden" id="chatSection">
+      <div class="section-head">
+        <div class="section-title"><span class="section-num">V.</span> Ask the Document</div>
       </div>
-      <form class="chat-input-row" id="chatForm" autocomplete="off">
-        <input type="text" class="chat-input" id="chatInput" placeholder="e.g. What is the notice period for termination?" disabled />
-        <button type="submit" class="btn" id="chatSendBtn" disabled>Send</button>
-      </form>
-    </section>
+      <div class="section-body">
+        <div class="suggestions" id="suggestions"></div>
+        <div class="chat-window" id="chatWindow">
+          <div class="chat-empty" id="chatEmpty">Pose a question about this document.</div>
+        </div>
+        <div class="chat-input-row">
+          <input type="text" class="chat-input" id="chatInput" placeholder="e.g. What is the notice period for termination?" disabled />
+          <button type="button" class="btn-primary" id="chatSendBtn" disabled>Submit</button>
+        </div>
+      </div>
+    </div>
 
     <footer>
-      Built by <a href="https://cenredai.bizguro.net" target="_blank" rel="noopener">Cenred (Cj)</a>
-      &nbsp;&middot;&nbsp; Powered by Claude &nbsp;&middot;&nbsp; PDFs are processed in your browser; only the extracted text is sent to the AI
+      <div class="footer-rule">
+        <div class="footer-line"></div>
+        <div class="footer-seal"></div>
+        <div class="footer-line"></div>
+      </div>
+      <p>Built by <a href="https://cenredai.bizguro.net" target="_blank" rel="noopener">Cenred (Cj)</a> &nbsp;&middot;&nbsp; Powered by Claude &nbsp;&middot;&nbsp; PDFs are parsed in your browser — only extracted text is transmitted</p>
     </footer>
-  </div>
+
+  </main>
 
   <script type="module">
-    // ============================================================
-    // Document Intelligence Tool — frontend
-    // ============================================================
-
     import * as pdfjsLib from 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.0.379/pdf.min.mjs';
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.0.379/pdf.worker.min.mjs';
 
     const API_ENDPOINT = window.location.hostname === 'localhost'
       ? '/.netlify/functions/chat'
-      : 'https://cenred-document-intelligence.netlify.app/.netlify/functions/chat';
-    const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
+      : 'https://document-intelligence-tool.netlify.app/.netlify/functions/chat';
+
+    const MAX_FILE_SIZE = 10 * 1024 * 1024;
 
     const state = {
       documentText: '',
@@ -603,146 +849,76 @@
       isChatting: false,
     };
 
-    const $ = (id) => document.getElementById(id);
-    const showCard = (id) => $(id).classList.remove('hidden');
-    const hideCard = (id) => $(id).classList.add('hidden');
+    const $ = id => document.getElementById(id);
+    const show = id => $(id).classList.remove('hidden');
+    const hide = id => $(id).classList.add('hidden');
 
-    function setStatus(message, type = 'info') {
+    function setStatus(msg, type = 'info') {
       const el = $('uploadStatus');
-      if (!message) { el.innerHTML = ''; return; }
-      el.innerHTML = `<div class="status ${type}">${message}</div>`;
+      el.innerHTML = msg ? `<div class="status ${type}">${msg}</div>` : '';
     }
 
-    function escapeHtml(str) {
+    function esc(str) {
       return String(str ?? '')
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;');
+        .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
     }
 
-    // ============================================================
-    // File handling
-    // ============================================================
+    // Drag & drop
     const dropzone = $('dropzone');
     const fileInput = $('fileInput');
 
-    ['dragenter', 'dragover'].forEach(evt => {
-      dropzone.addEventListener(evt, (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        dropzone.classList.add('dragover');
-      });
-    });
-
-    ['dragleave', 'drop'].forEach(evt => {
-      dropzone.addEventListener(evt, (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        dropzone.classList.remove('dragover');
-      });
-    });
-
-    dropzone.addEventListener('drop', (e) => {
-      const file = e.dataTransfer.files?.[0];
-      if (file) handleFile(file);
-    });
-
-    fileInput.addEventListener('change', (e) => {
-      const file = e.target.files?.[0];
-      if (file) handleFile(file);
-    });
-
-    $('browseBtn').addEventListener('click', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      fileInput.click();
-    });
+    ['dragenter','dragover'].forEach(e => dropzone.addEventListener(e, ev => { ev.preventDefault(); ev.stopPropagation(); dropzone.classList.add('dragover'); }));
+    ['dragleave','drop'].forEach(e => dropzone.addEventListener(e, ev => { ev.preventDefault(); ev.stopPropagation(); dropzone.classList.remove('dragover'); }));
+    dropzone.addEventListener('drop', ev => { const f = ev.dataTransfer.files?.[0]; if (f) handleFile(f); });
+    fileInput.addEventListener('change', ev => { const f = ev.target.files?.[0]; if (f) handleFile(f); });
+    $('browseBtn').addEventListener('click', ev => { ev.preventDefault(); ev.stopPropagation(); fileInput.click(); });
 
     document.querySelectorAll('[data-sample]').forEach(btn => {
-      btn.addEventListener('click', async (e) => {
-        e.preventDefault();
-        e.stopPropagation();
+      btn.addEventListener('click', async ev => {
+        ev.preventDefault(); ev.stopPropagation();
         await loadSample(btn.dataset.sample, btn.dataset.name);
       });
     });
 
     function handleFile(file) {
-      const isPdf = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
-      if (!isPdf) {
-        setStatus('Only .pdf files are supported.', 'error');
-        return;
-      }
-      if (file.size > MAX_FILE_SIZE) {
-        setStatus(`File is ${(file.size / 1024 / 1024).toFixed(1)}MB — max is 10MB.`, 'error');
-        return;
-      }
-      setStatus(`Reading <strong>${escapeHtml(file.name)}</strong>...`, 'info');
+      const ok = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
+      if (!ok) { setStatus('Only PDF files are supported.', 'error'); return; }
+      if (file.size > MAX_FILE_SIZE) { setStatus(`File is ${(file.size/1024/1024).toFixed(1)} MB — maximum is 10 MB.`, 'error'); return; }
+      setStatus(`Reading <strong>${esc(file.name)}</strong>&hellip;`, 'info');
       extractAndAnalyze(file);
     }
 
     async function loadSample(url, name) {
-      setStatus(`Loading sample: <strong>${escapeHtml(name)}</strong>...`, 'info');
+      setStatus(`Loading sample document: <strong>${esc(name)}</strong>&hellip;`, 'info');
       try {
         const res = await fetch(url);
-        if (!res.ok) throw new Error('Sample file not available');
+        if (!res.ok) throw new Error('Sample not available');
         const blob = await res.blob();
-        const file = new File([blob], name, { type: 'application/pdf' });
-        handleFile(file);
+        handleFile(new File([blob], name, { type: 'application/pdf' }));
       } catch (err) {
-        setStatus(`Could not load sample: ${escapeHtml(err.message)}`, 'error');
+        setStatus(`Could not load sample: ${esc(err.message)}`, 'error');
       }
     }
 
-    // ============================================================
-    // PDF text extraction (PDF.js)
-    // ============================================================
-    async function extractTextFromPdf(file) {
-      const arrayBuffer = await file.arrayBuffer();
-      const doc = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-      const pageTexts = [];
-      for (let i = 1; i <= doc.numPages; i++) {
-        const page = await doc.getPage(i);
-        const content = await page.getTextContent();
-        const pageStr = content.items.map(it => it.str).join(' ');
-        pageTexts.push(pageStr);
-      }
-      return { text: pageTexts.join('\n\n'), pageCount: doc.numPages };
-    }
-
-    function renderStats() {
-      const wordCount = state.documentText.split(/\s+/).filter(Boolean).length;
-      const charCount = state.documentText.length;
-      const readingMinutes = Math.max(1, Math.round(wordCount / 220));
-      const stats = [
-        { label: 'File', value: state.fileName },
-        { label: 'Pages', value: state.pageCount },
-        { label: 'Words', value: wordCount.toLocaleString() },
-        { label: 'Characters', value: charCount.toLocaleString() },
-        { label: 'Reading time', value: `${readingMinutes} min` },
-      ];
-      $('statsGrid').innerHTML = stats.map(s =>
-        `<div class="stat"><div class="stat-label">${escapeHtml(s.label)}</div><div class="stat-value">${escapeHtml(s.value)}</div></div>`
-      ).join('');
-      showCard('statsCard');
-    }
-
-    // ============================================================
-    // Orchestration
-    // ============================================================
     async function extractAndAnalyze(file) {
-      hideCard('summaryCard');
-      hideCard('extractCard');
-      hideCard('chatCard');
+      hide('summarySection'); hide('extractSection'); hide('chatSection');
       state.chatHistory = [];
+      $('chatWindow').innerHTML = '<div class="chat-empty" id="chatEmpty">Pose a question about this document.</div>';
 
       let extracted;
       try {
-        extracted = await extractTextFromPdf(file);
+        const buf = await file.arrayBuffer();
+        const doc = await pdfjsLib.getDocument({ data: buf }).promise;
+        const pages = [];
+        for (let i = 1; i <= doc.numPages; i++) {
+          const page = await doc.getPage(i);
+          const content = await page.getTextContent();
+          pages.push(content.items.map(it => it.str).join(' '));
+        }
+        extracted = { text: pages.join('\n\n'), pageCount: doc.numPages };
       } catch (err) {
-        setStatus(`Could not read this PDF: ${escapeHtml(err.message)}`, 'error');
-        console.error(err);
+        setStatus(`Could not read this PDF: ${esc(err.message)}`, 'error');
         return;
       }
 
@@ -751,202 +927,143 @@
       state.pageCount = extracted.pageCount;
 
       if (state.documentText.length < 50) {
-        setStatus('This PDF appears to contain no extractable text. It may be a scanned image — OCR is not yet supported. Try a text-based PDF.', 'error');
+        setStatus('This PDF appears to contain no extractable text. It may be a scanned image — only text-based PDFs are supported.', 'error');
         return;
       }
 
-      setStatus(`Extracted ${state.documentText.length.toLocaleString()} characters from ${extracted.pageCount} page${extracted.pageCount === 1 ? '' : 's'}. Analyzing...`, 'success');
-      renderStats();
+      setStatus(`${state.documentText.length.toLocaleString()} characters extracted from ${extracted.pageCount} page${extracted.pageCount === 1 ? '' : 's'}. Analysing&hellip;`, 'success');
+
+      // Render stats
+      const words = state.documentText.split(/\s+/).filter(Boolean).length;
+      const readMins = Math.max(1, Math.round(words / 220));
+      $('statsGrid').innerHTML = [
+        { label: 'File', value: file.name },
+        { label: 'Pages', value: extracted.pageCount },
+        { label: 'Words', value: words.toLocaleString() },
+        { label: 'Characters', value: state.documentText.length.toLocaleString() },
+        { label: 'Est. reading', value: `${readMins} min` },
+      ].map(s => `<div class="stat-cell"><div class="stat-label">${esc(s.label)}</div><div class="stat-value">${esc(String(s.value))}</div></div>`).join('');
+      show('statsSection');
+
       await analyzeDocument();
     }
 
     async function analyzeDocument() {
       if (state.isAnalyzing) return;
       state.isAnalyzing = true;
-
-      showCard('summaryCard');
-      $('summaryText').innerHTML = '<span class="typing"><span></span><span></span><span></span></span> Analyzing your document...';
+      show('summarySection');
       $('metaRow').innerHTML = '';
+      $('summaryText').innerHTML = '<span class="typing"><span></span><span></span><span></span></span>&ensp;Analysing document&hellip;';
 
       try {
         const res = await fetch(API_ENDPOINT, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            mode: 'analyze',
-            documentText: state.documentText,
-            fileName: state.fileName,
-          }),
+          body: JSON.stringify({ mode: 'analyze', documentText: state.documentText, fileName: state.fileName }),
         });
-
-        if (!res.ok) {
-          const err = await res.json().catch(() => ({}));
-          throw new Error(err.error || `Analysis failed (${res.status})`);
-        }
-
+        if (!res.ok) { const e = await res.json().catch(() => ({})); throw new Error(e.error || `Analysis failed (${res.status})`); }
         const data = await res.json();
         renderAnalysis(data);
         enableChat(data.suggestions || []);
       } catch (err) {
-        $('summaryText').innerHTML = `<div class="status error">Analysis failed: ${escapeHtml(err.message)}</div>`;
-        console.error(err);
+        $('summaryText').innerHTML = `<div class="status error">Analysis failed: ${esc(err.message)}</div>`;
       } finally {
         state.isAnalyzing = false;
       }
     }
 
-    // ============================================================
-    // Render analysis
-    // ============================================================
     function renderAnalysis(data) {
-      // Meta row: doc type + confidence
-      const metaParts = [];
-      if (data.documentType) {
-        metaParts.push(`<span class="doc-type-badge">${escapeHtml(data.documentType)}</span>`);
-      }
-      if (data.confidence) {
-        const label = { high: 'High confidence', medium: 'Medium confidence', low: 'Low confidence' }[data.confidence] || 'Confidence';
-        metaParts.push(`<span class="confidence-badge ${data.confidence}">&#9679; ${escapeHtml(label)}</span>`);
-      }
-      if (data.truncated) {
-        metaParts.push(`<span class="truncated-pill">Document truncated to fit context window</span>`);
-      }
-      $('metaRow').innerHTML = metaParts.join('');
+      const meta = [];
+      if (data.documentType) meta.push(`<span class="doc-type-badge">${esc(data.documentType)}</span>`);
+      const confLabel = { high: 'High Confidence', medium: 'Medium Confidence', low: 'Low Confidence' }[data.confidence] || '';
+      if (confLabel) meta.push(`<span class="confidence-badge ${data.confidence}">${esc(confLabel)}</span>`);
+      if (data.truncated) meta.push(`<span class="truncated-badge">Document Truncated</span>`);
+      $('metaRow').innerHTML = meta.join('');
       $('summaryText').textContent = data.summary || 'No summary returned.';
 
-      // Extraction grid
       const grid = $('extractGrid');
       grid.innerHTML = '';
 
       const cards = [
-        {
-          title: 'Parties',
-          icon: '👥',
-          items: data.parties || [],
-          render: (v) => `<li>${escapeHtml(v)}</li>`,
-        },
-        {
-          title: 'Key Dates',
-          icon: '📅',
-          items: data.keyDates || [],
-          render: (v) => `<li class="kv"><span class="key">${escapeHtml(v.label || '')}</span><span class="val">${escapeHtml(v.date || '')}</span></li>`,
-        },
-        {
-          title: 'Amounts',
-          icon: '💰',
-          items: data.amounts || [],
-          render: (v) => `<li class="kv"><span class="key">${escapeHtml(v.label || '')}</span><span class="val">${escapeHtml(v.value || '')}</span></li>`,
-        },
-        {
-          title: 'Obligations',
-          icon: '✓',
-          items: data.obligations || [],
-          render: (v) => `<li>${escapeHtml(v)}</li>`,
-        },
-        {
-          title: 'Key Clauses',
-          icon: '§',
-          items: data.clauses || [],
-          render: (v) => `<li><div class="clause-name">${escapeHtml(v.name || '')}</div><div class="clause-summary">${escapeHtml(v.summary || '')}</div></li>`,
-        },
+        { title: 'Parties', items: data.parties || [], render: v => `<div class="extract-item">${esc(v)}</div>` },
+        { title: 'Key Dates', items: data.keyDates || [], render: v => `<div class="extract-item"><div class="extract-kv"><span class="extract-key">${esc(v.label||'')}</span><span class="extract-val">${esc(v.date||'')}</span></div></div>` },
+        { title: 'Amounts', items: data.amounts || [], render: v => `<div class="extract-item"><div class="extract-kv"><span class="extract-key">${esc(v.label||'')}</span><span class="extract-val">${esc(v.value||'')}</span></div></div>` },
+        { title: 'Obligations', items: data.obligations || [], render: v => `<div class="extract-item">${esc(v)}</div>` },
+        { title: 'Key Clauses', items: data.clauses || [], render: v => `<div class="extract-item"><div class="extract-clause-name">${esc(v.name||'')}</div><div class="extract-clause-summary">${esc(v.summary||'')}</div></div>` },
       ];
 
       cards.forEach(c => {
         const card = document.createElement('div');
         card.className = 'extract-card';
         const body = c.items.length === 0
-          ? '<div class="empty">None identified</div>'
-          : `<ul>${c.items.map(c.render).join('')}</ul>`;
-        card.innerHTML = `<h3>${c.title} <span class="count">${c.items.length}</span></h3>${body}`;
+          ? '<div class="extract-empty">None identified</div>'
+          : c.items.map(c.render).join('');
+        card.innerHTML = `<div class="extract-card-head"><span class="extract-card-title">${c.title}</span><span class="extract-card-count">${c.items.length}</span></div><div class="extract-card-body">${body}</div>`;
         grid.appendChild(card);
       });
 
-      showCard('extractCard');
+      show('extractSection');
     }
 
-    // ============================================================
-    // Chat
-    // ============================================================
     function enableChat(suggestions) {
-      showCard('chatCard');
+      show('chatSection');
       $('chatInput').disabled = false;
       $('chatSendBtn').disabled = false;
 
       const sugBox = $('suggestions');
-      if (suggestions && suggestions.length > 0) {
-        sugBox.innerHTML = '<span style="margin-right:6px;">Try:</span>' +
-          suggestions.slice(0, 4).map(s =>
-            `<span class="chip" data-q="${escapeHtml(s)}">${escapeHtml(s)}</span>`
-          ).join('');
+      if (suggestions.length > 0) {
+        sugBox.innerHTML = `<span class="suggestions-label">Ask:</span>` +
+          suggestions.slice(0, 4).map(s => `<span class="chip" data-q="${esc(s)}">${esc(s)}</span>`).join('');
         sugBox.querySelectorAll('.chip').forEach(chip => {
-          chip.addEventListener('click', () => {
-            $('chatInput').value = chip.dataset.q;
-            $('chatForm').dispatchEvent(new Event('submit', { cancelable: true }));
-          });
+          chip.addEventListener('click', () => { $('chatInput').value = chip.dataset.q; sendChat(); });
         });
       } else {
         sugBox.innerHTML = '';
       }
     }
 
-    function appendMessage(role, content) {
+    function appendMsg(role, content) {
       const empty = $('chatEmpty');
       if (empty) empty.remove();
       const win = $('chatWindow');
       const wrap = document.createElement('div');
       wrap.className = `msg ${role}`;
-      wrap.innerHTML = `
-        <div class="msg-avatar">${role === 'user' ? 'You' : 'AI'}</div>
-        <div class="msg-bubble"></div>
-      `;
+      wrap.innerHTML = `<div class="msg-avatar">${role === 'user' ? 'You' : 'AI'}</div><div class="msg-bubble"></div>`;
       wrap.querySelector('.msg-bubble').textContent = content;
       win.appendChild(wrap);
       win.scrollTop = win.scrollHeight;
       return wrap.querySelector('.msg-bubble');
     }
 
-    $('chatForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
+    async function sendChat() {
       if (state.isChatting) return;
       const input = $('chatInput');
       const message = input.value.trim();
       if (!message) return;
-
       input.value = '';
       input.disabled = true;
       $('chatSendBtn').disabled = true;
       state.isChatting = true;
 
-      appendMessage('user', message);
-      const thinkingBubble = appendMessage('assistant', '');
-      thinkingBubble.innerHTML = '<span class="typing"><span></span><span></span><span></span></span>';
+      appendMsg('user', message);
+      const thinking = appendMsg('assistant', '');
+      thinking.innerHTML = '<span class="typing"><span></span><span></span><span></span></span>';
 
       try {
         state.chatHistory.push({ role: 'user', content: message });
-
         const res = await fetch(API_ENDPOINT, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            mode: 'chat',
-            documentText: state.documentText,
-            fileName: state.fileName,
-            history: state.chatHistory,
-          }),
+          body: JSON.stringify({ mode: 'chat', documentText: state.documentText, fileName: state.fileName, history: state.chatHistory }),
         });
-
-        if (!res.ok) {
-          const err = await res.json().catch(() => ({}));
-          throw new Error(err.error || `Request failed (${res.status})`);
-        }
-
+        if (!res.ok) { const e = await res.json().catch(() => ({})); throw new Error(e.error || `Request failed (${res.status})`); }
         const data = await res.json();
         const reply = data.reply || 'No response received.';
-        thinkingBubble.textContent = reply;
+        thinking.textContent = reply;
         state.chatHistory.push({ role: 'assistant', content: reply });
       } catch (err) {
-        thinkingBubble.textContent = `Sorry — ${err.message}`;
-        thinkingBubble.parentElement.style.opacity = '0.7';
+        thinking.textContent = `Error: ${err.message}`;
+        thinking.parentElement.style.opacity = '0.6';
         state.chatHistory.pop();
       } finally {
         input.disabled = false;
@@ -954,7 +1071,10 @@
         state.isChatting = false;
         input.focus();
       }
-    });
+    }
+
+    $('chatSendBtn').addEventListener('click', sendChat);
+    $('chatInput').addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendChat(); } });
   </script>
 </body>
 </html>
